@@ -15,8 +15,14 @@ app.config.from_pyfile('local_settings.py')
 # Route for Click to Call demo page.
 @app.route('/')
 def index():
+    account_sid = app.config['TWILIO_ACCOUNT_SID']
+    auth_token = app.config['TWILIO_AUTH_TOKEN']
+    caller_id = app.config['TWILIO_CALLER_ID']
+    app_id = app.config['TWILIO_APP_SID']
+    
     return render_template('index.html',
-                           configuration_error=None)
+                           configuration_error=None,
+                           token=token)
 
 
 # Voice Request URL
@@ -48,15 +54,13 @@ def call():
 def outbound():
     response = VoiceResponse()
 
-    response.say("Thank you for contacting our sales department. If this "
-                 "click to call application was in production, we would "
-                 "dial out to your sales team with the Dial verb.",
-                 voice='alice')
-    '''
+    response.say("Test test.",
+                 voice='bob')
+    
     # Uncomment this code and replace the number with the number you want
     # your customers to call.
-    response.number("+16518675309")
-    '''
+    response.dial("+447552605712")
+    
     return str(response)
 
 
@@ -65,3 +69,14 @@ def outbound():
 def landing():
     return render_template('landing.html',
                            configuration_error=None)
+
+
+@app.route('/voice', methods=['POST'])
+def voice():
+    response = VoiceResponse()
+
+    response.say("Dialling a fixed number")
+
+    response.dial("+447552605712")
+
+    return str(response)
