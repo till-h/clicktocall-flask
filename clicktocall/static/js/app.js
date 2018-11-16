@@ -58,7 +58,7 @@ $(function() {
     var callButton = document.querySelector('#submitvoice');
 
     // Set up Twilio Device so browser can make calls
-    Twilio.Device.setup({{ token }}, {debug: false});
+    //Twilio.Device.setup({{ token }}, {debug: false});
 
     Twilio.Device.ready(function(device) {
         callButton.disabled = false;

@@ -19,7 +19,7 @@ def index():
     auth_token = app.config['TWILIO_AUTH_TOKEN']
     caller_id = app.config['TWILIO_CALLER_ID']
     app_id = app.config['TWILIO_APP_SID']
-    
+
     return render_template('index.html',
                            configuration_error=None,
                            token=token)
@@ -52,6 +52,7 @@ def call():
 
 @app.route('/outbound', methods=['POST'])
 def outbound():
+    testnumber = app.config['TESTNUMBER']
     response = VoiceResponse()
 
     response.say("Test test.",
@@ -59,7 +60,7 @@ def outbound():
     
     # Uncomment this code and replace the number with the number you want
     # your customers to call.
-    response.dial("+447552605712")
+    response.dial(testnumber)
     
     return str(response)
 
@@ -73,10 +74,11 @@ def landing():
 
 @app.route('/voice', methods=['POST'])
 def voice():
+    testnumber = app.config['TESTNUMBER']
     response = VoiceResponse()
 
-    response.say("Dialling a fixed number")
+    response.say("Dialling {}".format(testnumber))
 
-    response.dial("+447552605712")
+    response.dial(testnumber)
 
     return str(response)
