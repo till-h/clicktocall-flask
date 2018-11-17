@@ -24,21 +24,6 @@ $(function() {
         statusField.text('Ready');
     });
 
-    // // Intercept form submission and submit the form with ajax
-    // $('#contactForm').on('callbutton', function(event) {
-    //     // Prevent submit event from bubbling and automatically
-    //     // submitting the form
-    //     event.preventDefault();
-
-    //     console.log('callbutton button pressed');
-
-    //     phoneNumber = $('#phoneNumber').val();
-    //     var params = {'phoneNumber': phoneNumber};
-    //     console.log('Calling ' + phoneNumber);
-
-    //     //Twilio.Device.connect(params);
-    // });
-
     // Callback for Twilio Device connection
     Twilio.Device.connect(function(connection) {
         console.log('Connection is ' + connection);
@@ -60,10 +45,6 @@ $(function() {
         statusField.innerHTML = 'Error: ' + error.message;
     });
 
-    // Twilio.Device.connect(function(conn) {
-    //     statusField.innerHTML = 'Connected '; //+ conn
-    // });
-
     Twilio.Device.disconnect(function(conn) {
         statusField.innerHTML = 'Call ended';
     });
@@ -73,24 +54,24 @@ $(function() {
         conn.accept(); // accept incoming connection, start two-way audio
     });
 
-    callButton.click(function(){
-        if (callButton.classList.contains('ongoingCall')){
-            hangUp();
-        } else {
-            call();
-        }
+    callButton.click(function(event){
+        // Prevent button from submitting the form and forcing a page reload
+        event.preventDefault();
+        console.log('callButton clicked!');
+        call();
     });
 
     function hangUp() {
         Twilio.Device.disconnectAll();
-        callButton.innerHTML = 'Call';
-        callButton.className = 'noOngoingCall';
+        callButton.text('Call');
     }
 
     function call() {
-        var number = document.querySelector('#phoneNumber');
-        Twilio.Device.connect({ number: number.value });
-        callButton.innerHTML = 'Hang up';
-        callButton.className = 'ongoingCall';
+        var number = $('#phoneNumber').val();
+        var callerId = $('#phoneNumber').attr('callerid');
+        console.log('Calling ' + number + ' from ' + callerId);
+        Twilio.Device.connect({ 'phoneNumber': number,
+                                'callerId': '+441182072688' });
+        callButton.text('Hang up');
     }
 });
