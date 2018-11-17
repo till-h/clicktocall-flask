@@ -18,6 +18,7 @@ app.logger.info('Flask app created')
 def index():
     app.logger.info('/ request')
     return render_template('index.html',
+                           defaultPhoneNumber = app.config['TWILIO_DEFAULT_PHONE_NUMBER'],
                            configuration_error=None)
 
 # Generate Capability Token for making outgoing calls

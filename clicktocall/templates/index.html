@@ -23,12 +23,12 @@
                     </div>
                     <div class="form-group">
                         <input type="text" id="phoneNumber" 
-                            placeholder="(651) 555-7889" class="form-control">
+                            value="{{ defaultPhoneNumber }}" class="form-control">
                     </div>
                     <div class="form-group">
                         <p id="callstatus" class="bg-info">Uninitialised</p>
                     </div>
-                    <button type="submit" id="submitvoice" class="btn btn-default" disabled>
+                    <button type="submit" id="callbutton" class="btn btn-default" disabled>
                         Call
                     </button>
                 </form>
@@ -36,9 +36,9 @@
         </div>
     </div>
     <!-- Including page dependencies at bottom improves page load time -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.5/twilio.min.js"></script>
-    <script src="/static/js/intlTelInput.min.js"></script>
-    <script src="/static/js/app.js"></script>
+    <script type="text/javascript" src="/static/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="/static/js/app.js"></script>
   </body>
 </html>

@@ -8,41 +8,42 @@ $(function() {
         utilsScript: '/static/js/libphonenumber/src/utils.js'
     });
 
+    var statusField = $('#callstatus');
+    var callButton = $('#callbutton');
+
     // Get Capability Token from backend and set up Twilio Device
     $.get("/token", function(token) {
-        console.log("Getting /token, data = " + JSON.stringify(token));
+        console.log("JSON Web Token is " + JSON.stringify(token));
         Twilio.Device.setup(token);
     });
 
     // Callback for when device is ready
     Twilio.Device.ready(function(device) {
         console.log("Twilio Device ready.");
-        callButton.disabled = false;
-        statusField.innerHTML = 'Ready';
+        callButton.prop('disabled', false);
+        statusField.text('Ready');
     });
 
-    // Intercept form submission and submit the form with ajax
-    $('#contactForm').on('submitvoice', function(event) {
-        // Prevent submit event from bubbling and automatically
-        // submitting the form
-        event.preventDefault();
+    // // Intercept form submission and submit the form with ajax
+    // $('#contactForm').on('callbutton', function(event) {
+    //     // Prevent submit event from bubbling and automatically
+    //     // submitting the form
+    //     event.preventDefault();
 
-        console.log('submitvoice button pressed');
+    //     console.log('callbutton button pressed');
 
-        phoneNumber = $('#phoneNumber').val();
-        var params = {'phoneNumber': phoneNumber};
-        console.log('Calling ' + phoneNumber);
+    //     phoneNumber = $('#phoneNumber').val();
+    //     var params = {'phoneNumber': phoneNumber};
+    //     console.log('Calling ' + phoneNumber);
 
-        Twilio.Device.connect(params);
-    });
+    //     //Twilio.Device.connect(params);
+    // });
 
     // Callback for Twilio Device connection
     Twilio.Device.connect(function(connection) {
         console.log('Connection is ' + connection);
     });
 
-    var statusField = $('#callstatus');
-    var callButton = $('#submitvoice');
     console.log(callButton);
 
     // Callback for when network connection is lost
