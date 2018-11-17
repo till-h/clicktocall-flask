@@ -1,5 +1,6 @@
 // Execute JavaScript on page load
 $(function() {
+
     // Initialize phone number text input plugin
     $('#phoneNumber').intlTelInput({
         responsiveDropdown: true,
@@ -7,66 +8,45 @@ $(function() {
         utilsScript: '/static/js/libphonenumber/src/utils.js'
     });
 
-    // Intercept form submission and submit the form with ajax
-    $('#contactForm').on('submit', function(e) {
-        // Prevent submit event from bubbling and automatically
-        // submitting the form
-        e.preventDefault();
-
-        // Call our ajax endpoint on the server to initialize the
-        // phone call
-        $.ajax({
-            url: '/call',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                phoneNumber: $('#phoneNumber').val()
-            }
-        }).done(function(data) {
-            // The JSON sent back from the server will contain
-            // a success message
-            alert(data.message);
-        }).fail(function(error) {
-            alert(JSON.stringify(error));
-        });
-    });
-    // Intercept form submission and submit the form with ajax
-    $('#contactForm').on('submitvoice', function(e) {
-        // Prevent submit event from bubbling and automatically
-        // submitting the form
-        e.preventDefault();
-
-        // Call our ajax endpoint on the server to initialize the
-        // phone call
-        $.ajax({
-            url: '/voice',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                phoneNumber: $('#phoneNumber').val()
-            }
-        }).done(function(data) {
-            // The JSON sent back from the server will contain
-            // a success message
-            alert(data.message);
-        }).fail(function(error) {
-            alert(JSON.stringify(error));
-        });
+    // Get Capability Token from backend and set up Twilio Device
+    $.get("/token", function(data) {
+        console.log("Getting /token, data = " + JSON.stringify(data));
+        Twilio.Device.setup(data.token);
     });
 
-    var statusField = document.querySelector('#callstatus');
-    var callButton = document.querySelector('#submitvoice');
-
-    // Set up Twilio Device so browser can make calls
-    //Twilio.Device.setup({{ token }}, {debug: false});
-
+    // Callback for when device is ready
     Twilio.Device.ready(function(device) {
+        console.log("Twilio Device ready.");
         callButton.disabled = false;
         statusField.innerHTML = 'Ready';
     });
 
+    // Intercept form submission and submit the form with ajax
+    $('#contactForm').on('submitvoice', function(event) {
+        // Prevent submit event from bubbling and automatically
+        // submitting the form
+        event.preventDefault();
+
+        console.log('submitvoice button pressed');
+
+        phoneNumber = $('#phoneNumber').val();
+        var params = {'phoneNumber': phoneNumber};
+        console.log('Calling ' + phoneNumber);
+
+        Twilio.Device.connect(params);
+    });
+
+    // Callback for Twilio Device connection
+    Twilio.Device.connect(function(connection) {
+        console.log('Connection is ' + connection);
+    });
+
+    var statusField = $('#callstatus');
+    var callButton = $('#submitvoice');
+
+    // Callback for when network connection is lost
     Twilio.Device.offline(function() {
-        // Called on network connection lost.
+        console.log("Network lost.");
     });
 
     Twilio.Device.cancel(function(conn) {
@@ -78,9 +58,9 @@ $(function() {
         statusField.innerHTML = 'Error: ' + error.message;
     });
 
-    Twilio.Device.connect(function(conn) {
-        statusField.innerHTML = 'Connected '; //+ conn
-    });
+    // Twilio.Device.connect(function(conn) {
+    //     statusField.innerHTML = 'Connected '; //+ conn
+    // });
 
     Twilio.Device.disconnect(function(conn) {
         statusField.innerHTML = 'Call ended';
