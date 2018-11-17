@@ -34,6 +34,8 @@ def token():
     # token = capability.generate()
     # return jsonify({'token': token})
 
+    #return capability
+    app.logger.info(capability)
     return capability.to_jwt()
 
 # Provide endpoint for Twilio app

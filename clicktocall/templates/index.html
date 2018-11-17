@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <title>Twilio Click to Call for Heroku and Flask</title>
+      <title>Click to Call</title>
       <!-- We use Twitter Bootstrap as the default styling for our page-->
       <link rel="stylesheet" 
           href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -25,17 +25,17 @@
                         <input type="text" id="phoneNumber" 
                             placeholder="(651) 555-7889" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-default">
-                        Contact Sales
-                    </button>
-                    <button type="submitvoice" class="noOngoingCall" disabled>
+                    <div class="form-group">
+                        <p id="callstatus" class="bg-info">Uninitialised</p>
+                    </div>
+                    <button type="submit" id="submitvoice" class="btn btn-default" disabled>
+                        Call
                     </button>
                 </form>
             </div>
         </div>
     </div>
-    <p id="callStatus">Uninitialised</p>
-    <!-- Include page dependencies -->
+    <!-- Including page dependencies at bottom improves page load time -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.5/twilio.min.js"></script>
     <script src="/static/js/intlTelInput.min.js"></script>

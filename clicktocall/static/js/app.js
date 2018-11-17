@@ -9,9 +9,9 @@ $(function() {
     });
 
     // Get Capability Token from backend and set up Twilio Device
-    $.get("/token", function(data) {
-        console.log("Getting /token, data = " + JSON.stringify(data));
-        Twilio.Device.setup(data.token);
+    $.get("/token", function(token) {
+        console.log("Getting /token, data = " + JSON.stringify(token));
+        Twilio.Device.setup(token);
     });
 
     // Callback for when device is ready
@@ -43,6 +43,7 @@ $(function() {
 
     var statusField = $('#callstatus');
     var callButton = $('#submitvoice');
+    console.log(callButton);
 
     // Callback for when network connection is lost
     Twilio.Device.offline(function() {
@@ -71,7 +72,7 @@ $(function() {
         conn.accept(); // accept incoming connection, start two-way audio
     });
 
-    callButton.addEventListener('click', function(){
+    callButton.click(function(){
         if (callButton.classList.contains('ongoingCall')){
             hangUp();
         } else {
