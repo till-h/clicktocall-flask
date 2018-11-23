@@ -29,28 +29,29 @@ $(function() {
         console.log('Connection is ' + connection);
     });
 
-    console.log(callButton);
-
     // Callback for when network connection is lost
     Twilio.Device.offline(function() {
         console.log("Network lost.");
     });
 
     Twilio.Device.cancel(function(conn) {
-        statusField.innerHTML = 'Call cancelled by ' + conn.parameters.From;
-        // conn.status
+		console.log('Call cancelled by ' + conn.parameters.From);
+        statusField.text = 'Call cancelled by ' + conn.parameters.From;
     });
 
     Twilio.Device.error(function(error) {
-        statusField.innerHTML = 'Error: ' + error.message;
+		console.log('Error: ' + error.message);
+        statusField.text = 'Error: ' + error.message;
     });
 
     Twilio.Device.disconnect(function(conn) {
-        statusField.innerHTML = 'Call ended';
+		console.log('Call ended');
+        statusField.text = 'Call ended';
     });
 
     Twilio.Device.incoming(function(conn) {
-        statusField.innerHTML = 'Incoming call from ' + conn.parameters.From;
+		console.log('Incoming call from ' + conn.parameters.From);
+        statusField.text = 'Incoming call from ' + conn.parameters.From;
         conn.accept(); // accept incoming connection, start two-way audio
     });
 
