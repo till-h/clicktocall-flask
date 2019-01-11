@@ -45,7 +45,7 @@ $(function() {
     });
 
     Twilio.Device.disconnect(function(conn) {
-		console.log('Call ended');
+		console.log('Disconnect ' + conn);
         statusField.text = 'Call ended';
     });
 
@@ -55,24 +55,48 @@ $(function() {
         conn.accept(); // accept incoming connection, start two-way audio
     });
 
-    callButton.click(function(event){
-        // Prevent button from submitting the form and forcing a page reload
-        event.preventDefault();
-        console.log('callButton clicked!');
-        call();
-    });
-
-    function hangUp() {
-        Twilio.Device.disconnectAll();
-        callButton.text('Call');
-    }
-
     function call() {
         var number = $('#phoneNumber').val();
         var callerId = $('#phoneNumber').attr('callerid');
-        console.log('Calling ' + number + ' from ' + callerId);
+        console.log('Calling ' + number + ' from ' + callerId + '...');
         Twilio.Device.connect({ 'phoneNumber': number,
                                 'callerId': callerId });
         callButton.text('Hang up');
     }
+    
+    function hangUp() {
+        Twilio.Device.disconnectAll();
+        callButton.text('Call');
+        console.log('Hanging up.');
+    }
+    
+    dummy_call = function() {
+		callButton.text('Hang up');
+		console.log("Call!");
+	};
+	
+	dummy_hangUp = function() {
+		callButton.text('Call');
+		console.log("Hang up!");
+	};
+    
+    var callHangUp = (function () {
+		var callInProgress = false;
+		return function() {
+			if (callInProgress == false) {
+				callInProgress = true;
+				call();
+			} else {
+				callInProgress = false;
+				hangUp();
+			}
+		}
+	})();
+      
+    callButton.click(function(event){
+        // Prevent button from submitting the form and forcing a page reload
+        event.preventDefault();
+        callHangUp();
+    });
+
 });
