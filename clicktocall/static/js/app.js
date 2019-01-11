@@ -72,7 +72,7 @@ $(function() {
         var callerId = $('#phoneNumber').attr('callerid');
         console.log('Calling ' + number + ' from ' + callerId);
         Twilio.Device.connect({ 'phoneNumber': number,
-                                'callerId': '+441182072688' });
+                                'callerId': callerId });
         callButton.text('Hang up');
     }
 });
