@@ -21,7 +21,8 @@ $(function() {
     Twilio.Device.ready(function(device) {
         console.log("Twilio Device ready.");
         callButton.prop('disabled', false);
-        statusField.text('Ready');
+        statusField.text = 'Ready';
+        tryCallUrlNumber();
     });
 
     // Callback for Twilio Device connection
@@ -55,9 +56,7 @@ $(function() {
         conn.accept(); // accept incoming connection, start two-way audio
     });
 
-    function call() {
-        var number = $('#phoneNumber').val();
-        var callerId = $('#phoneNumber').attr('callerid');
+    function call(number, callerId) {
         console.log('Calling ' + number + ' from ' + callerId + '...');
         Twilio.Device.connect({ 'phoneNumber': number,
                                 'callerId': callerId });
@@ -70,22 +69,15 @@ $(function() {
         console.log('Hanging up.');
     }
     
-    dummy_call = function() {
-		callButton.text('Hang up');
-		console.log("Call!");
-	};
-	
-	dummy_hangUp = function() {
-		callButton.text('Call');
-		console.log("Hang up!");
-	};
-    
+    // Use closure to toggle callInProgress later
     var callHangUp = (function () {
-		var callInProgress = false;
+        var callInProgress = false;
 		return function() {
 			if (callInProgress == false) {
-				callInProgress = true;
-				call();
+                callInProgress = true;
+                var number = $('#phoneNumber').val();
+                var callerId = $('#phoneNumber').attr('callerid');
+				call(number, callerId);
 			} else {
 				callInProgress = false;
 				hangUp();
@@ -98,5 +90,19 @@ $(function() {
         event.preventDefault();
         callHangUp();
     });
+
+    function tryCallUrlNumber() {
+        // Dial number passed in as URL query string, if present.
+        // Pass + as %2b, https://stackoverflow.com/a/5450212
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlNumber = urlParams.get('number');
+        var callerId = $('#phoneNumber').attr('callerid');
+        if (urlNumber !== null) {
+            console.log('Received number in URL: ' + urlNumber);
+            call(urlNumber, callerId);
+        } else {
+            console.log('(No query string number to dial.)');
+        }
+    }
 
 });
